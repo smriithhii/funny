@@ -1,0 +1,416 @@
+# -*- coding: utf-8 -*-
+"""
+Created on Fri Oct 28 05:47:02 2022
+
+@author: smrit
+"""
+
+#FLOYD WARSHELL
+
+#METHOD 1
+
+# Floyd Warshall Algorithm in python
+import copy
+
+# The number of vertices
+nV = 4
+
+INF = 999
+
+
+# Algorithm implementation
+def floyd_warshall(G):
+    distance=copy.deepcopy(G)
+    for k in range(nV):
+        for i in range(nV):
+            for j in range(nV):
+                distance[i][j] = min(distance[i][j], distance[i][k] + distance[k][j])
+    print_solution(distance)
+
+
+# Printing the solution
+def print_solution(distance):
+    for i in range(nV):
+        for j in range(nV):
+            if(distance[i][j] == INF):
+                print("INF", end=" ")
+            else:
+                print(distance[i][j], end="  ")
+        print(" ")
+
+
+G = [[0, 3, INF, 5],
+         [2, 0, INF, 4],
+         [INF, 1, 0, INF],
+         [INF, INF, 2, 0]]
+floyd_warshall(G)
+
+print(G)
+
+#METHOD 2
+
+inf = 999999999
+v = 4
+
+def shortestpath(graph,v):
+    g = graph
+    for k in range(v):
+        for i in range(v):
+            for j in range(v):
+                g[i][j] = min(g[i][j],g[i][k]+g[k][j])
+    return g
+
+
+
+graph = [[0,1,6,inf],
+         [0,5,inf,inf],
+         [2,3,0,inf],
+         [inf,inf,inf,0]]
+
+path = shortestpath(graph ,v)
+
+
+for i in range(v):
+    for j in range(v):
+        if path[i][j]==inf:
+            print('inf',end=' ')
+        else:
+            print(path[i][j],end=' ')
+
+    if j==v-1:
+        print()
+
+#METHOD 3
+
+# Floyd Warshall Algorithm in python
+import copy
+
+# The number of vertices
+nV = 4
+
+INF = 999
+
+
+# Algorithm implementation
+def floyd_warshall(G):
+    distance=copy.deepcopy(G)
+
+    # Adding vertices individually
+    for k in range(nV):
+        for i in range(nV):
+            for j in range(nV):
+                distance[i][j] = min(distance[i][j], distance[i][k] + distance[k][j])
+    print_solution(distance)
+
+
+# Printing the solution
+def print_solution(distance):
+    for i in range(nV):
+        for j in range(nV):
+            if(distance[i][j] == INF):
+                print("INF", end=" ")
+            else:
+                print(distance[i][j], end="  ")
+        print(" ")
+
+
+G = [[0, 3, INF, 5],
+         [2, 0, INF, 4],
+         [INF, 1, 0, INF],
+         [INF, INF, 2, 0]]
+floyd_warshall(G)
+
+print(G)
+
+
+#TRAVEL SALESMAN PROBLEM OR DISTANCE BETWEEN CITIES
+#QUESTION 3
+
+# Python3 program to implement traveling salesman
+# problem using naive approach.
+# from sys import maxsize
+from itertools import permutations
+V = 4
+
+# implementation of traveling Salesman Problem
+def travellingSalesmanProblem(graph, s):
+
+    # store all vertex apart from source vertex
+    vertex = [i for i in range(V) if i!=s]
+
+    # store minimum weight Hamiltonian Cycle
+    min_path = 99999
+    next_permutation=permutations(vertex)
+    for i in next_permutation:
+        print('i:',i)
+
+        # store current Path weight(cost)
+        current_pathweight = 0
+
+        # compute current path weight
+        k = s
+        for j in i:
+            current_pathweight += graph[k][j]
+            k = j
+            print(current_pathweight)
+        current_pathweight += graph[k][s]
+        print('out:',current_pathweight)
+
+        # update minimum
+        min_path = min(min_path, current_pathweight)
+
+    return min_path
+
+
+# Driver Code
+if __name__ == "__main__":
+
+    # matrix representation of graph
+    graph = [[0, 10, 15, 20], 
+             [10, 0, 35, 25],
+             [15, 35, 0, 30],
+             [20, 25, 30, 0]]
+    s = 3
+    print(travellingSalesmanProblem(graph, s))
+
+#TRAVELLING SALESMAN PROBLEM METHOD 2:
+    
+#P2
+# Given a set of cities and distances between every pair of cities,
+# find the shortest possible route that visits every city exactly once and returns to 
+# the starting point.
+n = 4 
+dist = [[0, 0, 0, 0, 0], [0, 0, 10, 15, 20], [
+0, 10, 0, 25, 25], [0, 15, 25, 0, 30], [0, 20, 25, 30, 0]]
+memo = [[-1]*(1 << (n+1)) for _ in range(n+1)]
+def fun(i, mask):
+    if mask == ((1 << i) | 3):
+        return dist[1][i]
+    if memo[i][mask] != -1:
+        return memo[i][mask]
+    res = 10**9 
+    for j in range(1, n+1):
+        if (mask & (1 << j)) != 0 and j != i and j != 1:
+            res = min(res, fun(j, mask & (~(1 << i))) + dist[j][i])
+            memo[i][mask] = res 
+    return res
+ans = 10**9
+for i in range(1, n+1):
+    ans = min(ans, fun(i, (1 << (n+1))-1) + dist[i][1])
+print("The cost of most efficient tour = " + str(ans))
+#TSP
+from sys import maxsize
+from itertools import permutations
+V = 4
+def travellingSalesmanProblem(graph, s):
+	vertex = []
+	for i in range(V):
+		if i != s:
+			vertex.append(i)
+	min_path = maxsize
+	next_permutation=permutations(vertex)
+	for i in next_permutation:
+		current_pathweight = 0
+		k = s
+		for j in i:
+			current_pathweight += graph[k][j]
+			k = j
+		current_pathweight += graph[k][s]
+		min_path = min(min_path, current_pathweight)	
+	return min_path
+if __name__ == "__main__":
+	graph = [[0, 10, 15, 20], [10, 0, 35, 25],
+			[15, 35, 0, 30], [20, 25, 30, 0]]
+	s = 0
+	print(travellingSalesmanProblem(graph, s))    
+
+
+#N QUEENS IN NxN BOARD question 3(Back tracking using recursion)
+
+N = int(input("Enter the number of queens :"))
+
+board = [[0]*N for _ in range(N)]
+
+def is_attack(i, j):
+    for k in range(0,N):
+        if board[i][k]=='Q' or board[k][j]=='Q':
+            return True
+    for k in range(0,N):
+        for l in range(0,N):
+            if (k+l==i+j) or (k-l==i-j):
+                if board[k][l]=='Q':
+                    return True
+    return False
+
+def N_queen(n):
+    if n==0:
+        return True
+    for i in range(0,N):
+        for j in range(0,N):
+            if (not(is_attack(i,j))) and (board[i][j]!='Q'):
+                board[i][j] = 'Q'
+                if N_queen(n-1)==True:
+                    return True
+                board[i][j] = 0
+
+    return False
+
+if N_queen(N)==True:
+    print('\nPossible')
+    for i in board:
+        print (*i,sep=" ")
+else:
+    print('\nNot possible')
+
+
+#Implement a method to solve 'n' queens problem using backtracking approach.
+global N
+N = 4
+def printSolution(board):
+	for i in range(N):
+		for j in range(N):
+			print(board[i][j], end = " ")
+		print()
+def isSafe(board, row, col):
+	for i in range(col):
+		if board[row][i] == 1:
+			return False
+	for i, j in zip(range(row, -1, -1),
+					range(col, -1, -1)):
+		if board[i][j] == 1:
+			return False
+	for i, j in zip(range(row, N, 1),
+					range(col, -1, -1)):
+		if board[i][j] == 1:
+			return False
+	return True
+def solveNQUtil(board, col):
+	if col >= N:
+		return True
+	for i in range(N):
+		if isSafe(board, i, col):
+			board[i][col] = 1
+			if solveNQUtil(board, col + 1) == True:
+				return True
+			board[i][col] = 0
+	return False
+def solveNQ():
+	board = [ [0, 0, 0, 0],
+			[0, 0, 0, 0],
+			[0, 0, 0, 0],
+			[0, 0, 0, 0] ]
+	if solveNQUtil(board, 0) == False:
+		print ("Solution does not exist")
+		return False
+	printSolution(board)
+	return True
+solveNQ()
+
+
+#QUESTION 1 NEGATIVE WEIGHT
+
+import sys
+
+# Recursive function to print the path of a given vertex from source vertex
+def getPath(parent, vertex):
+    if vertex < 0:
+        return []
+    return getPath(parent, parent[vertex]) + [vertex]
+
+# Function to run the BellmanΓÇôFord algorithm from a given source
+def bellmanFord(edges, source, n):
+    # distance[] and parent[] stores the shortest path (least cost/path) info
+    distance = [sys.maxsize] * n
+    parent = [-1] * n
+
+    # Initially, all vertices except source vertex weight INFINITY and no parent
+    distance[source] = 0
+
+    # relaxation step (run V-1 times)
+    for k in range(n - 1):
+        # edge from `u` to `v` having weight `w`
+        for (u, v, w) in edges:
+            # if the distance to destination `v` can be shortened by taking edge (u, v)
+            if distance[u] != sys.maxsize and distance[u] + w < distance[v]:
+                # update distance to the new lower value
+                distance[v] = distance[u] + w
+                # set v's parent as `u`
+                parent[v] = u
+
+    # run relaxation step once more for n'th time to check for negative-weight cycles
+    for (u, v, w) in edges:  # edge from `u` to `v` having weight `w`
+        # if the distance to destination `u` can be shortened by taking edge (u, v)
+        if distance[u] != sys.maxsize and distance[u] + w < distance[v]:
+            print('Negative-weight cycle is found!!')
+            return
+
+    for i in range(n):
+        if i != source and distance[i] < sys.maxsize:
+            print(f'The distance of vertex {i} from vertex {source} is {distance[i]}. '
+                  f'Its path is', getPath(parent, i))
+
+
+if __name__ == '__main__':
+
+    # of graph edges as per the above diagram
+    edges = [
+        # (x, y, w) ΓÇö> edge from `x` to `y` having weight `w`
+        (0, 1, -1), (0, 2, 4), (1, 2, 3), (1, 3, 2),
+        (1, 4, 2), (3, 2, 5), (3, 1, 1), (4, 3, -3)
+    ]
+
+    # set the maximum number of nodes in the graph
+    n = 5
+
+    # run the BellmanΓÇôFord algorithm from every node
+    for source in range(n):
+        bellmanFord(edges, source, n)
+
+
+# question 2 method 2
+
+n = 4 # there are four nodes in example graph (graph is 1-based)
+
+# dist[i][j] represents shortest distance to go from i to j
+# this matrix can be calculated for any given graph using
+# all-pair shortest path algorithms
+dist = [[0, 0, 0, 0, 0], [0, 0, 10, 15, 20], [
+	0, 10, 0, 25, 25], [0, 15, 25, 0, 30], [0, 20, 25, 30, 0]]
+
+# memoization for top down recursion
+memo = [[-1]*(1 << (n+1)) for _ in range(n+1)]
+
+
+def fun(i, mask):
+	# base case
+	# if only ith bit and 1st bit is set in our mask,
+	# it implies we have visited all other nodes already
+	if mask == ((1 << i) | 3):
+		return dist[1][i]
+
+	# memoization
+	if memo[i][mask] != -1:
+		return memo[i][mask]
+
+	res = 10**9 # result of this sub-problem
+
+	# we have to travel all nodes j in mask and end the path at ith node
+	# so for every node j in mask, recursively calculate cost of
+	# travelling all nodes in mask
+	# except i and then travel back from node j to node i taking
+	# the shortest path take the minimum of all possible j nodes
+	for j in range(1, n+1):
+		if (mask & (1 << j)) != 0 and j != i and j != 1:
+			res = min(res, fun(j, mask & (~(1 << i))) + dist[j][i])
+	memo[i][mask] = res # storing the minimum value
+	return res
+
+
+# Driver program to test above logic
+ans = 10**9
+for i in range(1, n+1):
+	# try to go from node 1 visiting all nodes in between to i
+	# then return from i taking the shortest route to 1
+	ans = min(ans, fun(i, (1 << (n+1))-1) + dist[i][1])
+
+print("The cost of most efficient tour = " + str(ans))
